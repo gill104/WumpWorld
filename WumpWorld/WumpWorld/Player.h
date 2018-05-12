@@ -7,7 +7,6 @@ private:
 	int location;
 	int rotation;
 	int prevLocation;
-	int boardSize;
 
 public:
 	Player();
@@ -20,11 +19,11 @@ public:
 
 
 
-	void moveNorth();
+	int moveNorth(int);
 	void moveNortheast();
-	void moveEast();
+	int moveEast();
 	void moveSouthEast();
-	void moveSouth();
+	int moveSouth(int);
 	void moveSouthWest();
 	int moveWest();
 	void moveNorthWest();

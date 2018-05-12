@@ -102,6 +102,9 @@ void FileInput::gridAllInfo()
 	    gridPitLocations = FileInput::getGridOf(this->pitLocations);
 	    gridGoldLocation = FileInput::getGridOf(1,this->gLocation);
 	    gridWumpusLocation = FileInput::getGridOf(2, this->wLocation);
+
+		lowerBounds = new int[bSize]; //for limit purposes
+		fillLowerBounds();
 }
 /**
 Uses the coordinate value of the given [Coor] converts it
@@ -180,11 +183,62 @@ std::vector<int> FileInput::getGridOf(std::vector<Coor> value)
 }
 void FileInput::movePlayer(char direction)
 {
+	int tempGL;
 	switch (direction)
 	{
 	case 'a':
-		gridPlayerLocation = player.moveWest();
-		updatePlayer();
+		
+		tempGL = player.moveWest();
+		if (isWithinBounds(tempGL,0))
+		{
+			std::cout << "accepted" << std::endl;
+			gridPlayerLocation = tempGL;
+			updatePlayer();
+		}
+		else
+		{
+			player.setLocation(gridPlayerLocation);
+		}
+		break;
+	case 's':
+		tempGL = player.moveSouth(bSize);
+		if (isWithinBounds(tempGL,1))
+		{
+			std::cout << "accepted" << std::endl;
+			gridPlayerLocation = tempGL;
+			updatePlayer();
+		}
+		else
+		{
+			player.setLocation(gridPlayerLocation);
+		}
+		break;
+	case 'd':
+		tempGL = player.moveEast();
+		if (isWithinBounds(tempGL,0))
+		{
+			std::cout << "accepted" << std::endl;
+			gridPlayerLocation = tempGL;
+			updatePlayer();
+		}
+		else
+		{
+			player.setLocation(gridPlayerLocation);
+		}
+		break;
+	case 'w':
+		tempGL = player.moveNorth(bSize);
+		if (isWithinBounds(tempGL, 1))
+		{
+			std::cout << "accepted" << std::endl;
+			gridPlayerLocation = tempGL;
+			updatePlayer();
+		}
+		else
+		{
+			player.setLocation(gridPlayerLocation);
+		}
+		break;
 	}
 }
 void FileInput::updatePlayer()
@@ -232,4 +286,46 @@ void FileInput::setUpBox()
 }
 std::vector<FileInput::Box> FileInput::giveBoxInfo() {
 	return gridBox;
+}
+void FileInput::fillLowerBounds()
+{
+	int number;
+	for (int x = 0; x < bSize; x++)
+	{
+		number = bSize * x;
+		lowerBounds[x] = number;
+		std::cout << "LOWER BOUNDS: " << lowerBounds[x] << std::endl;
+	}
+}
+bool FileInput::isWithinBounds(int tempGL, int type)
+{
+	if (type == 0)//West East lower bounds
+	{
+		int lowerBoundSection = (gridPlayerLocation / bSize);
+		//int upperBoundSection = lowerBoundSection + bSize;
+		std::cout << "LBS: " << lowerBoundSection << std::endl;
+		if (tempGL < lowerBounds[lowerBoundSection])
+		{
+			return false;
+		}
+		if(tempGL > (lowerBounds[lowerBoundSection] + bSize-1))
+		{
+			return false;
+		}	
+	}
+	if (type == 1) //north South lower bounds 
+	{
+		int lowerBoundSection = 0;
+		int upperBoundSection = bSize-1;
+		if (tempGL < lowerBounds[lowerBoundSection])
+		{
+			return false;
+		}
+		if (tempGL > lowerBounds[upperBoundSection] + bSize-1)
+		{
+			return false;
+		}
+	}
+	
+	return true;
 }

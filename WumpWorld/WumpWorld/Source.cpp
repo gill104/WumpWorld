@@ -48,12 +48,19 @@ int main()
 			map1.displayWorld(worldInfo);
 			break;
 		case 's':
+			cout << "move left" << endl;
+			worldInfo.movePlayer('s');
+			map1.displayWorld(worldInfo);
 			break;
 		case 'd':
-
+			cout << "move left" << endl;
+			worldInfo.movePlayer('d');
+			map1.displayWorld(worldInfo);
 			break;
 		case 'w':
-
+			cout << "move left" << endl;
+			worldInfo.movePlayer('w');
+			map1.displayWorld(worldInfo);
 			break;
 		case 'o':
 			cout << "quit" << endl;
