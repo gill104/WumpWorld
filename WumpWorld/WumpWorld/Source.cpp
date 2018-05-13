@@ -6,6 +6,7 @@
 #include "FileInput.h"
 #include "WorldMap.h"
 #include "Player.h"
+
 using namespace std;
 
 int main()
@@ -35,11 +36,14 @@ int main()
 	
 	WorldMap map1(worldInfo);
 	cout << endl;
+	map1.displayWorld(worldInfo);
+
 
 	while (startGame)
 	{
 		cout << "Move: ";
 		cin >> userInput;
+		std::system("cls");
 		switch (userInput)
 		{
 		case 'a':
@@ -73,6 +77,6 @@ int main()
 			break;
 		}
 	}
-	system("pause");
+	//system("pause");
 	return 0;
 }

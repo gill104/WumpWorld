@@ -36,7 +36,8 @@ FileInput::Box::Box() {
 	wumpus = false;
 	gold = false;
 	pit = false;
-	effect = -1;
+	breeze = false;
+	stench = false;
 }
 /**
 Reads from the file and sets the appropriate values

@@ -24,7 +24,8 @@ public:
 		bool wumpus;
 		bool gold;
 		bool pit;
-		int effect;
+		bool breeze;
+		bool stench;
 		Box();
 	};
 private:
