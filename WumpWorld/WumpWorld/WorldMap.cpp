@@ -15,7 +15,7 @@ void WorldMap::displayWorld(FileInput map1)
 
 	/**
 		+-------------+
-		|    [ # ]    |
+		|[ + ][ # ]   |
 		|{ G }   [ P ]|   
 		|[ ~ ]   [ S ]|
 		|    [ W ]    |
@@ -60,15 +60,33 @@ void WorldMap::displayWorld(FileInput map1)
 
 				if (rows == 1 && columns > 0)
 				{
-					if (gridData[counter].pit)
+					if (gridData[counter].shiny && gridData[counter].pit)
+					{
+						std::cout << "[ + ][ # ]   |";
+					}
+					else if (gridData[counter].pit)
+					{
 						std::cout << "    [ # ]     |";
+					}
+					else if (gridData[counter].shiny)
+					{
+						std::cout << "[ + ]         |";
+					}
 					else {
 						std::cout << "              |";
 					}
 				}
 				else if ((rows == 1 && columns == map1.getBoardSize() - 1) || rows == 1)
 				{
-					if (gridData[counter].pit)
+					if (gridData[counter].shiny && gridData[counter].pit)
+					{
+						std::cout << "|[ + ][ # ]   |";
+					}
+					else if (gridData[counter].shiny)
+					{
+						std::cout << "|[ + ]        |";
+					}
+					else if (gridData[counter].pit)
 					{
 						std::cout << "|   [ # ]     |";
 					}
@@ -90,7 +108,12 @@ void WorldMap::displayWorld(FileInput map1)
 					}
 					else if (gridData[counter].player)
 					{
-						std::cout << "     " << counter <<  "  [ P ]|";
+						if (counter < 10)
+						{
+							std::cout << "     " << counter << "   [ P ]|";
+						}
+						else
+							std::cout << "     " << counter <<  "  [ P ]|";
 					}
 					else
 					{
@@ -120,7 +143,7 @@ void WorldMap::displayWorld(FileInput map1)
 				{
 					if (gridData[counter].breeze && gridData[counter].stench)
 					{
-						std::cout << "[ ~ ]   [ S ]|";
+						std::cout << "[ ~ ]    [ S ]|";
 					}
 					else if (gridData[counter].breeze)
 					{
@@ -143,7 +166,7 @@ void WorldMap::displayWorld(FileInput map1)
 					}
 					else if (gridData[counter].breeze)
 					{
-						std::cout << "|[ ~ ]       |";
+						std::cout << "|[ ~ ]        |";
 					}
 					else if (gridData[counter].stench)
 					{

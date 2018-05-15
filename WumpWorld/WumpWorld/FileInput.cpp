@@ -38,6 +38,7 @@ FileInput::Box::Box() {
 	pit = false;
 	breeze = false;
 	stench = false;
+	shiny = false;
 }
 /**
 Reads from the file and sets the appropriate values
@@ -86,6 +87,10 @@ FileInput::FileInput(std::fstream& file)
 
 	gridAllInfo();
 	setUpBox();
+	addEffect(gridPitLocations);
+	addEffect(gridGoldLocation, 1);
+	addEffect(gridWumpusLocation, 2);
+	addEffect(gridPitLocations);
 }
 int FileInput::getBoardSize()
 {
@@ -97,15 +102,19 @@ void FileInput::gridAllInfo()
 	    gridPlayerLocation = FileInput::getGridOf(0,this->pLocation);
 		if (gridPlayerLocation != -1)
 		{
-			
 			player.setLocation(gridPlayerLocation);
 		}
 	    gridPitLocations = FileInput::getGridOf(this->pitLocations);
+		
 	    gridGoldLocation = FileInput::getGridOf(1,this->gLocation);
+		
 	    gridWumpusLocation = FileInput::getGridOf(2, this->wLocation);
+		
 
 		lowerBounds = new int[bSize]; //for limit purposes
 		fillLowerBounds();
+
+		
 }
 /**
 Uses the coordinate value of the given [Coor] converts it
@@ -135,9 +144,186 @@ int FileInput::getGridOf(int typeOfInput, Coor value)
 		break;
 	}
 }
-void setEffectArea(int gridLocation, int type)
+void FileInput::addEffect(int gridLocation, int type)
 {
+	//					     	  0     1           2          3 4      5      6           7  
+	//int locationPerimeter[8] = { bSize, bSize - 1, bSize + 1, -1,1,-bSize, -bSize - 1, -bSize + 1 };
+	int tempLocation = gridLocation;
+	int fullBoard = bSize * bSize;
+	switch (type)
+	{
+	case 1:
+		std::cout << "gold Location: " << gridGoldLocation << std::endl;
+		//up
+		//checking base left and right
+		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
+		{
+			gridBox[gridLocation + 1].shiny = true;
+		}
+		if (isWithinBounds(gridLocation, gridLocation - 1, 0))
+		{
+			gridBox[gridLocation - 1].shiny = true;
+		}
+		//checking north portion 
+		tempLocation = gridLocation + (-bSize);
+		if (isWithinBounds(gridLocation, tempLocation, 1))
+		{
+			gridBox[tempLocation].shiny = true;
 
+			//then check left and right sides
+			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
+				gridBox[tempLocation-1].shiny = true;
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				gridBox[tempLocation + 1].shiny = true;
+			}
+		}
+		// checking south portion 
+		tempLocation = gridLocation + bSize;
+		if (isWithinBounds(gridLocation, tempLocation, 1))
+		{
+			gridBox[tempLocation].shiny = true;
+			//then check left and right sides
+			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
+				gridBox[tempLocation - 1].shiny = true;
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				gridBox[tempLocation + 1].shiny = true;
+			}
+		}
+		break;
+	case 2:
+		//checking base left and right
+		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
+		{
+			gridBox[gridLocation + 1].stench = true;
+		}
+		if (isWithinBounds(gridLocation, gridLocation - 1, 0))
+		{
+			gridBox[gridLocation - 1].stench = true;
+		}
+		//checking north portion 
+		tempLocation = gridLocation + (-bSize);
+		if (isWithinBounds(gridLocation, tempLocation, 1))
+		{
+			gridBox[tempLocation].stench = true;
+
+			//then check left and right sides
+			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
+				gridBox[tempLocation - 1].stench = true;
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				gridBox[tempLocation + 1].stench = true;
+			}
+		}
+		// checking south portion
+		tempLocation = gridLocation + bSize;
+		if (isWithinBounds(gridLocation, tempLocation, 1))
+		{
+			gridBox[tempLocation].stench = true;
+			//then check left and right sides
+			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
+				gridBox[tempLocation - 1].stench = true;
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				gridBox[tempLocation + 1].stench = true;
+			}
+		}
+		break;
+	default:
+		std::cout << "default case!" << std::endl;
+		break;
+	}
+}
+void FileInput::addEffect(std::vector<int> pitLoc)
+{
+	int fullBoard = bSize * bSize;
+	for (int x = 0; x < pitLoc.size(); x++)
+	{
+		int tempLocation = pitLoc[x];
+		std::cout << "gold Location: " << gridGoldLocation << std::endl;
+			//up
+			//checking base left and right
+			if (isWithinBounds(pitLoc[x], pitLoc[x] + 1, 0))
+			{
+				if (!gridBox[pitLoc[x] + 1].pit)
+				{
+					gridBox[pitLoc[x] + 1].breeze = true;
+				}
+				
+			}
+			if (isWithinBounds(pitLoc[x], pitLoc[x] - 1, 0))
+			{
+				if (!gridBox[pitLoc[x] - 1].pit)
+				{
+					gridBox[pitLoc[x] - 1].breeze = true;
+				}
+				
+			}
+			//checking north portion 
+			tempLocation = pitLoc[x] + (-bSize);
+			if (isWithinBounds(pitLoc[x], tempLocation, 1))
+			{
+				if (!gridBox[tempLocation].pit)
+				{
+					gridBox[tempLocation].breeze = true;
+				}
+				
+
+				//then check left and right sides
+				if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+				{
+					if (!gridBox[tempLocation-1].pit)
+					{
+						gridBox[tempLocation - 1].breeze = true;
+					}
+					
+				}
+				if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+				{
+					if (!gridBox[tempLocation+1].pit)
+					{
+						gridBox[tempLocation + 1].breeze = true;
+					}
+					
+				}
+			}
+			// checking south portion 
+			tempLocation = pitLoc[x] + bSize;
+			if (isWithinBounds(pitLoc[x], tempLocation, 1))
+			{
+				if (!gridBox[tempLocation].pit)
+				{
+					gridBox[tempLocation].breeze = true;
+				}
+				
+				//then check left and right sides
+				if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+				{
+					if (!gridBox[tempLocation -1].pit)
+					{
+						gridBox[tempLocation - 1].breeze = true;
+					}
+					
+				}
+				if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+				{
+					if (!gridBox[tempLocation+1].pit)
+					{
+						gridBox[tempLocation + 1].breeze = true;
+					}
+					
+				}
+			}
+	}
 }
 /**
 [fancy math] recursive function -- essentially divides X
@@ -190,7 +376,7 @@ void FileInput::movePlayer(char direction)
 	case 'a':
 		
 		tempGL = player.moveWest();
-		if (isWithinBounds(tempGL,0))
+		if (isWithinBounds(gridPlayerLocation,tempGL,0))
 		{
 			std::cout << "accepted" << std::endl;
 			gridPlayerLocation = tempGL;
@@ -203,7 +389,7 @@ void FileInput::movePlayer(char direction)
 		break;
 	case 's':
 		tempGL = player.moveSouth(bSize);
-		if (isWithinBounds(tempGL,1))
+		if (isWithinBounds(gridPlayerLocation,tempGL,1))
 		{
 			std::cout << "accepted" << std::endl;
 			gridPlayerLocation = tempGL;
@@ -216,7 +402,7 @@ void FileInput::movePlayer(char direction)
 		break;
 	case 'd':
 		tempGL = player.moveEast();
-		if (isWithinBounds(tempGL,0))
+		if (isWithinBounds(gridPlayerLocation,tempGL,0))
 		{
 			std::cout << "accepted" << std::endl;
 			gridPlayerLocation = tempGL;
@@ -229,7 +415,7 @@ void FileInput::movePlayer(char direction)
 		break;
 	case 'w':
 		tempGL = player.moveNorth(bSize);
-		if (isWithinBounds(tempGL, 1))
+		if (isWithinBounds(gridPlayerLocation,tempGL, 1))
 		{
 			std::cout << "accepted" << std::endl;
 			gridPlayerLocation = tempGL;
@@ -298,11 +484,15 @@ void FileInput::fillLowerBounds()
 		std::cout << "LOWER BOUNDS: " << lowerBounds[x] << std::endl;
 	}
 }
-bool FileInput::isWithinBounds(int tempGL, int type)
+
+//type 0 = west/east. 1 = north/south
+//subject target location
+//tempGL wanted location
+bool FileInput::isWithinBounds(int subject, int tempGL, int type)
 {
 	if (type == 0)//West East lower bounds
 	{
-		int lowerBoundSection = (gridPlayerLocation / bSize);
+		int lowerBoundSection = (subject / bSize);
 		//int upperBoundSection = lowerBoundSection + bSize;
 		std::cout << "LBS: " << lowerBoundSection << std::endl;
 		if (tempGL < lowerBounds[lowerBoundSection])

@@ -26,6 +26,7 @@ public:
 		bool pit;
 		bool breeze;
 		bool stench;
+		bool shiny;
 		Box();
 	};
 private:
@@ -45,6 +46,8 @@ private:
 
 	std::vector<Box> gridBox;
 
+	void addEffect(int, int);
+	void addEffect(std::vector<int>);
 	int *lowerBounds;
 protected:
 	void gridAllInfo();
@@ -58,7 +61,7 @@ protected:
 
 	//put on box vector
 	void setUpBox();
-	bool isWithinBounds(int,int);
+	bool isWithinBounds(int,int,int);
 public:
 	FileInput(std::fstream& file);
 	int getBoardSize();
