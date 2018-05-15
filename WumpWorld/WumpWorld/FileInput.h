@@ -27,6 +27,10 @@ public:
 		bool breeze;
 		bool stench;
 		bool shiny;
+
+		bool visited;
+
+		std::vector<int> neighbors;
 		Box();
 	};
 private:
@@ -62,6 +66,8 @@ protected:
 	//put on box vector
 	void setUpBox();
 	bool isWithinBounds(int,int,int);
+	void getNeighbors(Box);
+
 public:
 	FileInput(std::fstream& file);
 	int getBoardSize();
@@ -72,4 +78,5 @@ public:
 
 	//displaying 
 	std::vector<Box> giveBoxInfo();
+
 };

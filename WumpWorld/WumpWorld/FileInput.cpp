@@ -87,6 +87,7 @@ FileInput::FileInput(std::fstream& file)
 
 	gridAllInfo();
 	setUpBox();
+	
 	addEffect(gridPitLocations);
 	addEffect(gridGoldLocation, 1);
 	addEffect(gridWumpusLocation, 2);
@@ -150,179 +151,146 @@ void FileInput::addEffect(int gridLocation, int type)
 	//int locationPerimeter[8] = { bSize, bSize - 1, bSize + 1, -1,1,-bSize, -bSize - 1, -bSize + 1 };
 	int tempLocation = gridLocation;
 	int fullBoard = bSize * bSize;
-	switch (type)
+	/*switch (type)
 	{
-	case 1:
+	case 1:*/
 		std::cout << "gold Location: " << gridGoldLocation << std::endl;
 		//up
 		//checking base left and right
 		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
 		{
-			gridBox[gridLocation + 1].shiny = true;
+			if (type == 0)
+				if(!gridBox[gridLocation + 1].pit)
+				{
+					gridBox[gridLocation + 1].breeze = true;
+				}
+				
+			if(type == 1)
+				gridBox[gridLocation + 1].shiny = true;
+			if(type == 2)
+				gridBox[gridLocation + 1].stench = true;
+			if(type == 3)
+				gridBox[gridLocation].neighbors.push_back(gridLocation + 1);
+				
 		}
 		if (isWithinBounds(gridLocation, gridLocation - 1, 0))
 		{
-			gridBox[gridLocation - 1].shiny = true;
+			if (type == 0)
+				if (!gridBox[gridLocation - 1].pit)
+				{
+					gridBox[gridLocation - 1].breeze = true;
+				}
+			if(type == 1)
+				gridBox[gridLocation - 1].shiny = true;
+			if(type == 2)
+				gridBox[gridLocation - 1].stench = true;
+			if(type == 3)
+				gridBox[gridLocation].neighbors.push_back(gridLocation - 1);
+			
 		}
 		//checking north portion 
 		tempLocation = gridLocation + (-bSize);
 		if (isWithinBounds(gridLocation, tempLocation, 1))
 		{
-			gridBox[tempLocation].shiny = true;
-
+			if (type == 0)
+				if (!gridBox[tempLocation].pit)
+				{
+					gridBox[tempLocation].breeze = true;
+				}
+			if (type == 1)
+				gridBox[tempLocation].shiny = true;
+			if (type == 2)
+				gridBox[tempLocation].stench = true;
+			if (type == 3)
+				gridBox[gridLocation].neighbors.push_back(tempLocation);
+				
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
 			{
-				gridBox[tempLocation-1].shiny = true;
+				if (type == 0)
+					if (!gridBox[tempLocation - 1].pit)
+					{
+						gridBox[tempLocation - 1].breeze = true;
+					}
+				if (type == 1)
+					gridBox[tempLocation - 1].shiny = true;
+				if (type == 2)
+					gridBox[tempLocation - 1].stench = true;
+				if (type == 3)
+					gridBox[gridLocation].neighbors.push_back(tempLocation - 1);
+				
 			}
 			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
 			{
-				gridBox[tempLocation + 1].shiny = true;
+				if (type == 0)
+					if (!gridBox[tempLocation + 1].pit)
+					{
+						gridBox[tempLocation + 1].breeze = true;
+					}
+				if (type == 1)
+					gridBox[tempLocation + 1].shiny = true;
+				if (type == 2)
+					gridBox[tempLocation + 1].stench = true;
+				if (type == 3)
+					gridBox[gridLocation].neighbors.push_back(tempLocation + 1);
 			}
 		}
 		// checking south portion 
 		tempLocation = gridLocation + bSize;
 		if (isWithinBounds(gridLocation, tempLocation, 1))
 		{
-			gridBox[tempLocation].shiny = true;
+			if (type == 0)
+				if (!gridBox[tempLocation].pit)
+				{
+					gridBox[tempLocation].breeze = true;
+				}
+			if (type == 1)
+				gridBox[tempLocation].shiny = true;
+			if (type == 2)
+				gridBox[tempLocation].stench = true;
+			if (type == 3)
+				gridBox[gridLocation].neighbors.push_back(tempLocation);
+			
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
 			{
-				gridBox[tempLocation - 1].shiny = true;
+				if (type == 0)
+					if (!gridBox[tempLocation - 1].pit)
+					{
+						gridBox[tempLocation - 1].breeze = true;
+					}
+				if (type == 1)
+					gridBox[tempLocation - 1].shiny = true;
+				if (type == 2)
+					gridBox[tempLocation - 1].stench = true;
+				if (type == 3)
+					gridBox[gridLocation].neighbors.push_back(tempLocation - 1);
+					
+				
 			}
 			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
 			{
-				gridBox[tempLocation + 1].shiny = true;
+				if (type == 0)
+					if (!gridBox[tempLocation + 1].pit)
+					{
+						gridBox[tempLocation + 1].breeze = true;
+					}
+				if (type == 1)
+					gridBox[tempLocation + 1].shiny = true;
+				if (type == 2)
+					gridBox[tempLocation + 1].stench = true;
+				if (type == 3)
+					gridBox[gridLocation].neighbors.push_back(tempLocation + 1);
+				
 			}
 		}
-		break;
-	case 2:
-		//checking base left and right
-		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
-		{
-			gridBox[gridLocation + 1].stench = true;
-		}
-		if (isWithinBounds(gridLocation, gridLocation - 1, 0))
-		{
-			gridBox[gridLocation - 1].stench = true;
-		}
-		//checking north portion 
-		tempLocation = gridLocation + (-bSize);
-		if (isWithinBounds(gridLocation, tempLocation, 1))
-		{
-			gridBox[tempLocation].stench = true;
-
-			//then check left and right sides
-			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
-			{
-				gridBox[tempLocation - 1].stench = true;
-			}
-			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
-			{
-				gridBox[tempLocation + 1].stench = true;
-			}
-		}
-		// checking south portion
-		tempLocation = gridLocation + bSize;
-		if (isWithinBounds(gridLocation, tempLocation, 1))
-		{
-			gridBox[tempLocation].stench = true;
-			//then check left and right sides
-			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
-			{
-				gridBox[tempLocation - 1].stench = true;
-			}
-			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
-			{
-				gridBox[tempLocation + 1].stench = true;
-			}
-		}
-		break;
-	default:
-		std::cout << "default case!" << std::endl;
-		break;
-	}
 }
 void FileInput::addEffect(std::vector<int> pitLoc)
 {
 	int fullBoard = bSize * bSize;
 	for (int x = 0; x < pitLoc.size(); x++)
 	{
-		int tempLocation = pitLoc[x];
-		std::cout << "gold Location: " << gridGoldLocation << std::endl;
-			//up
-			//checking base left and right
-			if (isWithinBounds(pitLoc[x], pitLoc[x] + 1, 0))
-			{
-				if (!gridBox[pitLoc[x] + 1].pit)
-				{
-					gridBox[pitLoc[x] + 1].breeze = true;
-				}
-				
-			}
-			if (isWithinBounds(pitLoc[x], pitLoc[x] - 1, 0))
-			{
-				if (!gridBox[pitLoc[x] - 1].pit)
-				{
-					gridBox[pitLoc[x] - 1].breeze = true;
-				}
-				
-			}
-			//checking north portion 
-			tempLocation = pitLoc[x] + (-bSize);
-			if (isWithinBounds(pitLoc[x], tempLocation, 1))
-			{
-				if (!gridBox[tempLocation].pit)
-				{
-					gridBox[tempLocation].breeze = true;
-				}
-				
-
-				//then check left and right sides
-				if (isWithinBounds(tempLocation, tempLocation - 1, 0))
-				{
-					if (!gridBox[tempLocation-1].pit)
-					{
-						gridBox[tempLocation - 1].breeze = true;
-					}
-					
-				}
-				if (isWithinBounds(tempLocation, tempLocation + 1, 0))
-				{
-					if (!gridBox[tempLocation+1].pit)
-					{
-						gridBox[tempLocation + 1].breeze = true;
-					}
-					
-				}
-			}
-			// checking south portion 
-			tempLocation = pitLoc[x] + bSize;
-			if (isWithinBounds(pitLoc[x], tempLocation, 1))
-			{
-				if (!gridBox[tempLocation].pit)
-				{
-					gridBox[tempLocation].breeze = true;
-				}
-				
-				//then check left and right sides
-				if (isWithinBounds(tempLocation, tempLocation - 1, 0))
-				{
-					if (!gridBox[tempLocation -1].pit)
-					{
-						gridBox[tempLocation - 1].breeze = true;
-					}
-					
-				}
-				if (isWithinBounds(tempLocation, tempLocation + 1, 0))
-				{
-					if (!gridBox[tempLocation+1].pit)
-					{
-						gridBox[tempLocation + 1].breeze = true;
-					}
-					
-				}
-			}
+		addEffect(pitLoc[x], 0);
 	}
 }
 /**
@@ -519,4 +487,9 @@ bool FileInput::isWithinBounds(int subject, int tempGL, int type)
 	}
 	
 	return true;
+}
+
+void FileInput::getNeighbors(FileInput::Box box)
+{
+
 }
