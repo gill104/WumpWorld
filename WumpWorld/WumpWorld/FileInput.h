@@ -31,6 +31,8 @@ public:
 		bool visited;
 
 		std::vector<int> neighbors;
+
+		std::vector<int> weights;
 		Box();
 	};
 private:
@@ -50,6 +52,8 @@ private:
 
 	std::vector<Box> gridBox;
 
+	bool checkForObsticle(int);
+	void checkLeftRightBounds(int, int, int);
 	void addEffect(int, int);
 	void addEffect(std::vector<int>);
 	int *lowerBounds;
@@ -66,7 +70,7 @@ protected:
 	//put on box vector
 	void setUpBox();
 	bool isWithinBounds(int,int,int);
-	void getNeighbors(Box);
+	void getNeighbors();
 
 public:
 	FileInput(std::fstream& file);

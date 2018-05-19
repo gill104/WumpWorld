@@ -39,6 +39,8 @@ FileInput::Box::Box() {
 	breeze = false;
 	stench = false;
 	shiny = false;
+
+	visited = false;
 }
 /**
 Reads from the file and sets the appropriate values
@@ -88,10 +90,11 @@ FileInput::FileInput(std::fstream& file)
 	gridAllInfo();
 	setUpBox();
 	
-	addEffect(gridPitLocations);
+	//addEffect(gridPitLocations);
 	addEffect(gridGoldLocation, 1);
 	addEffect(gridWumpusLocation, 2);
 	addEffect(gridPitLocations);
+	getNeighbors();
 }
 int FileInput::getBoardSize()
 {
@@ -145,10 +148,59 @@ int FileInput::getGridOf(int typeOfInput, Coor value)
 		break;
 	}
 }
+
+void FileInput::checkLeftRightBounds(int gridLocation, int wantedgl, int type)
+{
+	if (type == 0)
+	{
+		if (!gridBox[wantedgl].pit)
+		{
+			gridBox[wantedgl].breeze = true;
+			gridBox[gridLocation].weights.push_back(25);
+		}
+		else
+		{
+			gridBox[gridLocation].weights.push_back(200);
+		}
+	}
+	else if (type == 1)
+	{
+		gridBox[wantedgl].shiny = true;
+		gridBox[gridLocation].weights.push_back(25);
+	}
+	else if (type == 2)
+	{
+		gridBox[wantedgl].stench = true;
+		gridBox[gridLocation].weights.push_back(100);
+	}
+	else
+	{
+		gridBox[gridLocation].neighbors.push_back(wantedgl);
+		if (checkForObsticle(wantedgl))//wumpus, pit
+		{
+			gridBox[gridLocation].weights.push_back(200);
+		}
+		else//nothing
+		{
+			gridBox[gridLocation].weights.push_back(30);
+		}
+	}
+}
 void FileInput::addEffect(int gridLocation, int type)
 {
-	//					     	  0     1           2          3 4      5      6           7  
-	//int locationPerimeter[8] = { bSize, bSize - 1, bSize + 1, -1,1,-bSize, -bSize - 1, -bSize + 1 };
+	/**
+		neighbors as listed;
+		WEST // EAST // NORTH // NORTHWEST // NORTHEAST // SOUTH // SOUTHWEST // SOUTHEAST
+
+		Weights:
+		Breeze - 50;
+		Stench - 100;
+		Shiny - 25;
+		Nothing - 30;
+		Pit - 200;
+		Wumpus - 200;
+
+	*/
 	int tempLocation = gridLocation;
 	int fullBoard = bSize * bSize;
 	/*switch (type)
@@ -157,39 +209,85 @@ void FileInput::addEffect(int gridLocation, int type)
 		std::cout << "gold Location: " << gridGoldLocation << std::endl;
 		//up
 		//checking base left and right
-		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
-		{
-			if (type == 0)
-				if(!gridBox[gridLocation + 1].pit)
-				{
-					gridBox[gridLocation + 1].breeze = true;
-				}
-				
-			if(type == 1)
-				gridBox[gridLocation + 1].shiny = true;
-			if(type == 2)
-				gridBox[gridLocation + 1].stench = true;
-			if(type == 3)
-				gridBox[gridLocation].neighbors.push_back(gridLocation + 1);
-				
-		}
 		if (isWithinBounds(gridLocation, gridLocation - 1, 0))
 		{
-			if (type == 0)
-				if (!gridBox[gridLocation - 1].pit)
-				{
-					gridBox[gridLocation - 1].breeze = true;
-				}
-			if(type == 1)
-				gridBox[gridLocation - 1].shiny = true;
-			if(type == 2)
-				gridBox[gridLocation - 1].stench = true;
-			if(type == 3)
-				gridBox[gridLocation].neighbors.push_back(gridLocation - 1);
-			
+			checkLeftRightBounds(gridLocation, gridLocation - 1,type);
 		}
+		else
+		{
+			gridBox[gridLocation].weights.push_back(1000);
+			gridBox[gridLocation].neighbors.push_back(-99);
+		}
+		if (isWithinBounds(gridLocation, gridLocation + 1, 0))
+		{
+			checkLeftRightBounds(gridLocation, gridLocation + 1, type);
+		}
+		else
+		{
+			gridBox[gridLocation].weights.push_back(1000);
+			gridBox[gridLocation].neighbors.push_back(-99);
+		}
+		//if (isWithinBounds(gridLocation, gridLocation + 1, 0))
+		//{
+		//	if (type == 0)
+		//		if (!gridBox[gridLocation + 1].pit)
+		//		{
+		//			gridBox[gridLocation + 1].breeze = true;
+		//			gridBox[gridLocation].weights.push_back(25);
+		//		}
+		//		else
+		//		{
+		//			gridBox[gridLocation].weights.push_back(200);
+		//		}
+		//	else if (type == 1)
+		//	{
+		//		gridBox[gridLocation + 1].shiny = true;
+		//		gridBox[gridLocation].weights.push_back(25);
+		//	}
+		//	else if (type == 2)
+		//	{
+		//		gridBox[gridLocation + 1].stench = true;
+		//		gridBox[gridLocation].weights.push_back(100);
+		//	}
+		//	else
+		//	{
+		//		gridBox[gridLocation].neighbors.push_back(gridLocation + 1);
+		//		if (checkForObsticle(gridLocation + 1))//wumpus, pit
+		//		{
+		//			gridBox[gridLocation].weights.push_back(200);
+		//		}
+		//		else//nothing
+		//		{
+		//			gridBox[gridLocation].weights.push_back(30);
+		//		}
+		//	}
+		//		
+		//}
+		//if (isWithinBounds(gridLocation, gridLocation - 1, 0))
+		//{
+		//	if (type == 0)
+		//		if (!gridBox[gridLocation - 1].pit)
+		//		{
+		//			gridBox[gridLocation - 1].breeze = true;
+		//			gridBox[gridLocation].weights.push_back(25);
+		//		}
+		//		else
+		//		{
+		//			gridBox[gridLocation].weights.push_back(200);
+		//		}
+		//	if(type == 1)
+		//		gridBox[gridLocation - 1].shiny = true;
+		//		gridBox[gridLocation].weights.push_back(25);
+		//	if(type == 2)
+		//		gridBox[gridLocation - 1].stench = true;
+		//		gridBox[gridLocation].weights.push_back(200);
+		//	if(type == 3)
+		//		gridBox[gridLocation].neighbors.push_back(gridLocation - 1);
+		//	
+		//}
+
 		//checking north portion 
-		tempLocation = gridLocation + (-bSize);
+		tempLocation = gridLocation - bSize;
 		if (isWithinBounds(gridLocation, tempLocation, 1))
 		{
 			if (type == 0)
@@ -206,6 +304,27 @@ void FileInput::addEffect(int gridLocation, int type)
 				
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
+				checkLeftRightBounds(gridLocation, tempLocation - 1, type);
+			}
+			else
+			{
+				gridBox[gridLocation].weights.push_back(1000);
+				gridBox[gridLocation].neighbors.push_back(-99);
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				checkLeftRightBounds(gridLocation, tempLocation + 1, type);
+			}
+			else
+			{
+				
+					gridBox[gridLocation].weights.push_back(1000);
+					gridBox[gridLocation].neighbors.push_back(-99);
+				
+				
+			}
+			/*if (isWithinBounds(tempLocation, tempLocation - 1, 0))
 			{
 				if (type == 0)
 					if (!gridBox[tempLocation - 1].pit)
@@ -233,7 +352,19 @@ void FileInput::addEffect(int gridLocation, int type)
 					gridBox[tempLocation + 1].stench = true;
 				if (type == 3)
 					gridBox[gridLocation].neighbors.push_back(tempLocation + 1);
+			}*/
+		}
+		else
+		{
+			if (type == 3)
+			{
+				for (int x = 0; x < 3; x++) // cannot go north left right 
+				{
+					gridBox[gridLocation].weights.push_back(1000);
+					gridBox[gridLocation].neighbors.push_back(-99);
+				}
 			}
+			
 		}
 		// checking south portion 
 		tempLocation = gridLocation + bSize;
@@ -254,6 +385,24 @@ void FileInput::addEffect(int gridLocation, int type)
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
 			{
+				checkLeftRightBounds(gridLocation, tempLocation - 1, type);
+			}
+			else
+			{
+				gridBox[gridLocation].weights.push_back(1000);
+				gridBox[gridLocation].neighbors.push_back(-99);
+			}
+			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
+			{
+				checkLeftRightBounds(gridLocation, tempLocation + 1, type);
+			}
+			else
+			{
+				gridBox[gridLocation].weights.push_back(1000);
+				gridBox[gridLocation].neighbors.push_back(-99);
+			}
+			/*if (isWithinBounds(tempLocation, tempLocation - 1, 0))
+			{
 				if (type == 0)
 					if (!gridBox[tempLocation - 1].pit)
 					{
@@ -265,8 +414,6 @@ void FileInput::addEffect(int gridLocation, int type)
 					gridBox[tempLocation - 1].stench = true;
 				if (type == 3)
 					gridBox[gridLocation].neighbors.push_back(tempLocation - 1);
-					
-				
 			}
 			if (isWithinBounds(tempLocation, tempLocation + 1, 0))
 			{
@@ -282,8 +429,31 @@ void FileInput::addEffect(int gridLocation, int type)
 				if (type == 3)
 					gridBox[gridLocation].neighbors.push_back(tempLocation + 1);
 				
-			}
+			}*/
 		}
+		else
+		{
+			if (type == 3)
+			{
+				for (int x = 0; x < 3; x++) // cannot go north left right 
+				{
+					gridBox[gridLocation].weights.push_back(1000);
+					gridBox[gridLocation].neighbors.push_back(-99);
+				}
+			}
+			
+		}
+}
+bool FileInput::checkForObsticle(int gridLocation)
+{
+	if (gridBox[gridLocation].wumpus || gridBox[gridLocation].pit)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 void FileInput::addEffect(std::vector<int> pitLoc)
 {
@@ -489,7 +659,10 @@ bool FileInput::isWithinBounds(int subject, int tempGL, int type)
 	return true;
 }
 
-void FileInput::getNeighbors(FileInput::Box box)
+void FileInput::getNeighbors()
 {
-
+	for (int x = 0; x < gridBox.size(); x++)
+	{
+		addEffect(gridBox[x].location, 3);
+	}
 }

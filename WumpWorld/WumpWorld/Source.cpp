@@ -6,6 +6,7 @@
 #include "FileInput.h"
 #include "WorldMap.h"
 #include "Player.h"
+#include "aStarSearch.h"
 
 using namespace std;
 
@@ -38,12 +39,14 @@ int main()
 	cout << endl;
 	map1.displayWorld(worldInfo);
 
-
+	AstarSearch astar(worldInfo);
 	while (startGame)
 	{
+		
 		cout << "Move: ";
 		cin >> userInput;
 		std::system("cls");
+		
 		switch (userInput)
 		{
 		case 'a':
@@ -70,6 +73,8 @@ int main()
 			cout << "quit" << endl;
 			break;
 		case 'i':
+		
+			map1.displayWorld(worldInfo);
 			map1.giveInfo(worldInfo);
 			break;
 		default:

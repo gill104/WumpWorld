@@ -250,21 +250,44 @@ void WorldMap::displayWorld(FileInput map1)
 }
 void WorldMap::giveInfo(FileInput map1)
 {
-	int userInput;
-	std::cout << "Enter Location: ";
-	std::cin >> userInput;
+	int userInput = 1;
+	
 	while (userInput >= 0)
 	{
+
+		std::cout << "Enter Location: ";
+		std::cin >> userInput;
 		if (userInput < 0)
 		{
 			break;
 		}
-		std::cout << "Enter Location: ";
-		std::cin >> userInput;
+		//std::cout << "Enter Location: ";
+		//std::cin >> userInput;
 
 		std::cout << "boxName: " << gridData[userInput].location << std::endl;
 		std::cout << "Player: " << gridData[userInput].player << std::endl;
 		std::cout << "Gold: " << gridData[userInput].gold << std::endl;
+		std::cout << "shiny: " << gridData[userInput].shiny << std::endl;
 		std::cout << "Wumpus: " << gridData[userInput].wumpus << std::endl;
+		std::cout << "stench: " << gridData[userInput].stench << std::endl;
+		std::cout << "pit: " << gridData[userInput].pit << std::endl;
+		std::cout << "breeze: " << gridData[userInput].breeze << std::endl;
+
+		std::cout << "neighbors: ";
+		for (int x = 0; x < gridData[userInput].neighbors.size(); x++)
+		{
+			std::cout << gridData[userInput].neighbors[x] << " ";
+		}
+		
+		std::cout << std::endl;
+
+		std::cout << "West // East // North // NorthWest // NorthEast// South // SouthWest // SouthEast" << std::endl;
+		std::cout << "Weights: ";
+		for (int x = 0; x < gridData[userInput].weights.size();x++)
+		{
+			std::cout << gridData[userInput].weights[x] << " ";
+
+		}
+		std::cout << std::endl;
 	}
 }
