@@ -156,34 +156,64 @@ void FileInput::checkLeftRightBounds(int gridLocation, int wantedgl, int type)
 		if (!gridBox[wantedgl].pit)
 		{
 			gridBox[wantedgl].breeze = true;
-			gridBox[gridLocation].weights.push_back(25);
+			//gridBox[gridLocation].weights.push_back(25);
 		}
 		else
 		{
-			gridBox[gridLocation].weights.push_back(200);
+			//gridBox[gridLocation].weights.push_back(200);
 		}
 	}
 	else if (type == 1)
 	{
 		gridBox[wantedgl].shiny = true;
-		gridBox[gridLocation].weights.push_back(25);
+		//gridBox[gridLocation].weights.push_back(25);
 	}
 	else if (type == 2)
 	{
 		gridBox[wantedgl].stench = true;
-		gridBox[gridLocation].weights.push_back(100);
+		//gridBox[gridLocation].weights.push_back(100);
 	}
 	else
 	{
-		gridBox[gridLocation].neighbors.push_back(wantedgl);
-		if (checkForObsticle(wantedgl))//wumpus, pit
+		addWeights(gridLocation,wantedgl);
+	}
+}
+void FileInput::addWeights(int gridLocation, int wantedgl)
+{
+	gridBox[gridLocation].neighbors.push_back(wantedgl);
+	if (checkForObsticle(wantedgl))//wumpus, pit
+	{
+		gridBox[gridLocation].weights.push_back(200);
+	}
+	else if (gridBox[wantedgl].gold)
+	{
+		gridBox[gridLocation].weights.push_back(5);
+	}
+	else if (gridBox[wantedgl].shiny)
+	{
+		gridBox[gridLocation].weights.push_back(20);
+	}
+	else if (gridBox[wantedgl].breeze)
+	{
+		if (gridBox[wantedgl].stench)
 		{
-			gridBox[gridLocation].weights.push_back(200);
+			gridBox[gridLocation].weights.push_back(55);
+			return;
 		}
-		else//nothing
+		gridBox[gridLocation].weights.push_back(40);
+	}
+	else if (gridBox[wantedgl].stench)
+	{
+		if (gridBox[wantedgl].breeze)
 		{
-			gridBox[gridLocation].weights.push_back(30);
+			gridBox[gridLocation].weights.push_back(55);
+			return;
 		}
+		gridBox[gridLocation].weights.push_back(40);
+	}
+	else
+	{
+		gridBox[gridLocation].weights.push_back(25);
 	}
 }
 void FileInput::addEffect(int gridLocation, int type)
@@ -300,7 +330,12 @@ void FileInput::addEffect(int gridLocation, int type)
 			if (type == 2)
 				gridBox[tempLocation].stench = true;
 			if (type == 3)
+			{
 				gridBox[gridLocation].neighbors.push_back(tempLocation);
+				addWeights(gridLocation, tempLocation);
+			}
+				
+				
 				
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))
@@ -380,7 +415,10 @@ void FileInput::addEffect(int gridLocation, int type)
 			if (type == 2)
 				gridBox[tempLocation].stench = true;
 			if (type == 3)
+			{
 				gridBox[gridLocation].neighbors.push_back(tempLocation);
+				addWeights(gridLocation, tempLocation);
+			}
 			
 			//then check left and right sides
 			if (isWithinBounds(tempLocation, tempLocation - 1, 0))

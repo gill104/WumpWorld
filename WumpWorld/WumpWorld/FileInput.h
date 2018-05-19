@@ -52,6 +52,7 @@ private:
 
 	std::vector<Box> gridBox;
 
+	void addWeights(int, int);
 	bool checkForObsticle(int);
 	void checkLeftRightBounds(int, int, int);
 	void addEffect(int, int);
