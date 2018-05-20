@@ -175,12 +175,13 @@ void FileInput::checkLeftRightBounds(int gridLocation, int wantedgl, int type)
 	}
 	else
 	{
+		gridBox[gridLocation].neighbors.push_back(wantedgl);
 		addWeights(gridLocation,wantedgl);
 	}
 }
 void FileInput::addWeights(int gridLocation, int wantedgl)
 {
-	gridBox[gridLocation].neighbors.push_back(wantedgl);
+	//gridBox[gridLocation].neighbors.push_back(wantedgl);
 	if (checkForObsticle(wantedgl))//wumpus, pit
 	{
 		gridBox[gridLocation].weights.push_back(200);
@@ -223,10 +224,11 @@ void FileInput::addEffect(int gridLocation, int type)
 		WEST // EAST // NORTH // NORTHWEST // NORTHEAST // SOUTH // SOUTHWEST // SOUTHEAST
 
 		Weights:
-		Breeze - 50;
-		Stench - 100;
-		Shiny - 25;
-		Nothing - 30;
+		Breeze - 40;\
+					 55
+		Stench - 40;/
+		Shiny - 20;
+		Nothing - 25;
 		Pit - 200;
 		Wumpus - 200;
 
