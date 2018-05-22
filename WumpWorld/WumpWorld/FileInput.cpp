@@ -41,6 +41,7 @@ FileInput::Box::Box() {
 	shiny = false;
 
 	visited = false;
+	currentDistance = -99;//change to infinity when you can
 }
 /**
 Reads from the file and sets the appropriate values

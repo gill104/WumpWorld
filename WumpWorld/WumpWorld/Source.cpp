@@ -2,16 +2,20 @@
 #include<string>
 #include<fstream>
 #include<vector>
+#include<random>
 
 #include "FileInput.h"
 #include "WorldMap.h"
 #include "Player.h"
 #include "aStarSearch.h"
+#include "pQueue.h"
 
 using namespace std;
 
 int main()
 {
+	//pQueue pQ;
+	
 	/*Parameters for the world*/
 
 	string string1; // thing here
@@ -40,6 +44,7 @@ int main()
 	map1.displayWorld(worldInfo);
 
 	AstarSearch astar(worldInfo);
+	astar.djikstrasSearch();
 	while (startGame)
 	{
 		

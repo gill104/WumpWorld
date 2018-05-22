@@ -146,6 +146,7 @@
     <ClCompile Include="aStarSearch.cpp" />
     <ClCompile Include="FileInput.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="pQueue.h" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="WorldMap.cpp" />
   </ItemGroup>

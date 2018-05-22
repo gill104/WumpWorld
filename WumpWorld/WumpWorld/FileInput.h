@@ -29,6 +29,7 @@ public:
 		bool shiny;
 
 		bool visited;
+		int currentDistance;
 
 		std::vector<int> neighbors;
 

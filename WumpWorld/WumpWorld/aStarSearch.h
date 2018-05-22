@@ -1,5 +1,6 @@
 #pragma once
 #include "FileInput.h"
+#include "pQueue.h"
 #include<queue>
 class AstarSearch
 {
