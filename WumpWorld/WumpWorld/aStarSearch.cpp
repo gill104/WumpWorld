@@ -40,11 +40,33 @@ void AstarSearch::breadthFirstSearch()
 }
 void AstarSearch::djikstrasSearch()
 {
-	pQueue pQ(FileInput::Box);
-	pQ.enqueue(targetList[0].location);
+	pQueue pQ;
+	std::vector<int> neededNeighbors;
+	targetList[0].currentDistance = 0;
+
+	if (targetList[0].neighbors.size() > 0)
+	{
+		for (int x = 0; x < targetList[0].neighbors.size(); x++)
+		{
+			//give them a distance;
+			if (targetList[0].neighbors[x] > 0)
+			{
+				std::cout << "x: " << x << std::endl;
+				std::cout << targetList[0].neighbors[x] << "   " << targetList[0].weights[x] << std::endl;
+				targetList[targetList[0].neighbors[x]].currentDistance += targetList[0].weights[x];
+				pQ.enqueue(targetList[targetList[0].neighbors[x]]);
+			}
+		}
+	}
+
 	while (!pQ.empty())
 	{
-		//pQ.dequeue();
+		//grab shorest Distance from pQ
+		FileInput::Box smallest = pQ.dequeue();
+
+		//find neighbors of smallest
+
 	}
+//	pQ.enqueue(targetList);
 }
 
