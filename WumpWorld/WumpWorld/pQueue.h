@@ -54,97 +54,120 @@ public:
 			current = newNode;
 		}
 	}
-	std::vector<int> checkForNeighbors()
+	void erase()
 	{
-		std::vector<int> neededNeighbors;
-		if (head != nullptr)//something in the link list
+		while (current != head)
 		{
-			current = head;
-			if (current->box.neighbors.size() > 0)//that is the start location
-			{
-				//if box has neighbors
-				//get their true distance
-				for (int x = 0; x < current->box.neighbors.size(); x++)
-				{
-					if (current->box.neighbors[x] > 0)
-					{
-						std::cout << "neighbors: " << current->box.neighbors[x] << std::endl;
-						neededNeighbors.push_back(current->box.neighbors[x]);
-					}
-				}
-			}
-			return neededNeighbors;
-		}
+			node * helperNode = new node();
+			helperNode = current;
 
-		
+			current = current->prev;
+			delete helperNode;
+		}
+		head = nullptr;
+		current = head;
 	}
-	FileInput::Box dequeue()
+	int size()
 	{
 		node *helperNode = new node();
 		helperNode = head;
-		FileInput::Box returningBox;
+		int count = 0;
+		while (helperNode != nullptr)
+		{
+			count++;
+			helperNode = helperNode->next;
+		}
+		return count;
+	}
+	int dequeue()
+	{
+		node *helperNode = new node();
+		helperNode = head;
+	//	FileInput::Box returningBox;
 		int low = getLowestDistance();
 		
-		while (helperNode->box.currentDistance != low)
+		if (helperNode != nullptr)
 		{
-			if (helperNode == nullptr)
+			while (helperNode->box.currentDistance != low)
 			{
-				std::cout << "Error lowest not found" << std::endl;
+				if (helperNode == nullptr)
+				{
+					return -20;
+				}
+				helperNode = helperNode->next;
+				
+			}
+
+
+			//helperNode->box.visited = true;
+			if (helperNode->prev != nullptr && helperNode->next != nullptr)
+			{
+				low = helperNode->box.location;
+				helperNode->next->prev = helperNode->prev;
+				helperNode->prev->next = helperNode->next;
+				//return helderNode;
+			//	returningBox = helperNode->box;
+				
+				std::cout << helperNode->box.location << " Deleted" << std::endl;
+
+				delete helperNode;
+
+
+			}
+			else if (helperNode->prev == nullptr && helperNode->next == nullptr)
+			{
+				low = helperNode->box.location;
+				head = nullptr;
+				current = head;
+				
+				delete helperNode;
+			}
+			else if (helperNode->prev != nullptr)
+			{
+				low = helperNode->box.location;
+				helperNode->prev->next = nullptr;
+				//return helderNode;
+				current = helperNode->prev;
+				
+				std::cout << helperNode->box.location << " Deleted" << std::endl;
+				//returningBox = helperNode->box;
+				delete helperNode;
+
 			}
 			else
-				helperNode = helperNode->next;
+			{
+				low = helperNode->box.location;
+				helperNode->next->prev = nullptr;
+				head = helperNode->next;
+				
+				//returningBox = helperNode->box;
+
+				std::cout << helperNode->box.location << " Deleted" << std::endl;
+				delete helperNode;
+			}
 		}
-		if (helperNode->prev != nullptr && helperNode->next != nullptr)
-		{
-
-			helperNode->next->prev = helperNode->prev;
-			helperNode->prev->next = helperNode->next;
-			//return helderNode;
-			returningBox = helperNode->box;
-			std::cout << helperNode->box.location << " Deleted" << std::endl;
-			
-			delete helperNode;
-			
-
-		}
-		else if (helperNode->prev != nullptr)
-		{
-			helperNode->prev->next = nullptr;
-			//return helderNode;
-			std::cout << helperNode->box.location << " Deleted" << std::endl;
-			returningBox = helperNode->box;
-			delete helperNode;
-
-		}
-		else
-		{
-			helperNode->next->prev = nullptr;
-			head = helperNode->next;
-			returningBox = helperNode->box;
-
-			std::cout << helperNode->box.location << " Deleted" << std::endl;
-			delete helperNode;
-		}
-
-		return returningBox;
+	
+		return low;
 	}
 
 	int getLowestDistance()
 	{
 		int lowestValue;
 		FileInput::Box tempSmall;
+		node *helperNode = current;
 		if (head != nullptr)
 		{
-			current = head;
-			lowestValue = current->box.currentDistance;
+			helperNode = head;
+			lowestValue = helperNode->box.currentDistance;
 			do {
-				if (lowestValue > current->box.currentDistance)
+				if (lowestValue > helperNode->box.currentDistance)
 				{
-					lowestValue = current->box.currentDistance;
-					tempSmall = current->box;
+					lowestValue = helperNode->box.currentDistance;
+					tempSmall = helperNode->box;
 				}
-				current = current->next;
-			} while (current != nullptr);
+				helperNode = helperNode->next;
+			} while (helperNode != nullptr);
+			delete helperNode;
 			return lowestValue;
 		}
 	}

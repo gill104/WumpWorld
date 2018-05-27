@@ -40,32 +40,98 @@ void AstarSearch::breadthFirstSearch()
 }
 void AstarSearch::djikstrasSearch()
 {
+	//enqueue starting
+	//dequeue. have priority Q erase
+	//input dequeued neighbors(non-visited only)
+	//finish upon entering goal
+	for (int x = 0; x < targetList.size(); x++)
+	{
+		targetList[x].visited = false;
+	}
 	pQueue pQ;
 	std::vector<int> neededNeighbors;
 	targetList[0].currentDistance = 0;
-
-	if (targetList[0].neighbors.size() > 0)
-	{
-		for (int x = 0; x < targetList[0].neighbors.size(); x++)
-		{
-			//give them a distance;
-			if (targetList[0].neighbors[x] > 0)
-			{
-				std::cout << "x: " << x << std::endl;
-				std::cout << targetList[0].neighbors[x] << "   " << targetList[0].weights[x] << std::endl;
-				targetList[targetList[0].neighbors[x]].currentDistance += targetList[0].weights[x];
-				pQ.enqueue(targetList[targetList[0].neighbors[x]]);
-			}
-		}
-	}
-
+	pQ.enqueue(targetList[0]);
+	std::string vistedList = "";
 	while (!pQ.empty())
 	{
+		std::cout <<"pqSize: " <<  pQ.size() << std::endl;
 		//grab shorest Distance from pQ
-		FileInput::Box smallest = pQ.dequeue();
+		int smallest = pQ.dequeue();
+		if (targetList[smallest].visited == true)
+		{
+			smallest = pQ.dequeue();
+		}
+		vistedList += std::to_string(targetList[smallest].location)  + " ";
+		std::cout << vistedList << std::endl;
+		std::cout << "Dequeued: " << targetList[smallest].location << std::endl;
+	
 
+		targetList[smallest].visited = true;
+		std::cout << "marked Visited: " << targetList[smallest].location << std::endl;
+		pQ.erase();
+
+		if (targetList[smallest].gold == true)
+		{
+			std::cout << vistedList << std::endl;
+			std::cout << "GOLD FOUND" << std::endl;
+			std::system("pause");
+		}
+		
 		//find neighbors of smallest
+		std::cout << "adding [ " << targetList[smallest].location << " ] neighbors" << std::endl;
+		for (int x = 0; x < targetList[smallest].neighbors.size(); x++)
+		{
+			//give them a distance;
+			if (targetList[smallest].neighbors[x] > 0)
+			{
+				if (targetList[targetList[smallest].neighbors[x]].visited == false)
+				{
 
+					/*					std::cout << "x: " << x << std::endl;
+										std::cout << targetList[targetList[smallest].neighbors[x]].currentDistance << "  + " << targetList[smallest].weights[x] << std::endl;*/
+					if (targetList[targetList[smallest].neighbors[x]].currentDistance == 100000)
+					{
+						std::cout << "current: " << targetList[smallest].location << std::endl;
+						std::cout << "neighbor: " << targetList[targetList[smallest].neighbors[x]].location << std::endl;
+
+						targetList[targetList[smallest].neighbors[x]].currentDistance = targetList[smallest].weights[x];
+						std::cout << ">>>>>>had no distance" << std::endl;
+					}
+					else
+					{
+						int oldNum = targetList[targetList[smallest].neighbors[x]].currentDistance;
+						int newNum = targetList[targetList[smallest].neighbors[x]].currentDistance += targetList[smallest].weights[x];
+
+						if (newNum < oldNum)
+						{
+							targetList[targetList[smallest].neighbors[x]].currentDistance = newNum;
+							std::cout << ">>>>>>Changed Distance" << std::endl;
+						}
+					}
+					//targetList[targetList[smallest].neighbors[x]].currentDistance += targetList[smallest].weights[x];
+
+					pQ.enqueue(targetList[targetList[smallest].neighbors[x]]);
+					std::cout << "Inserted: " << targetList[targetList[smallest].neighbors[x]].location << std::endl;
+
+
+				}
+				else
+				{
+					std::cout << smallest << " is vistited" << std::endl;
+				}
+			}
+			else
+			{
+				std::cout << targetList[smallest].neighbors[x] << " not valid number;" << std::endl;
+			}
+			
+		}
+		//check -- do not add visited neighbors.
+		std::system("pause");
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << std::endl;
 	}
 //	pQ.enqueue(targetList);
 }
