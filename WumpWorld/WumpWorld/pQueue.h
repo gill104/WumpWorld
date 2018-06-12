@@ -92,6 +92,7 @@ public:
 			{
 				if (helperNode == nullptr)
 				{
+					std::cout << "\n\n\nitem not found!!" << std::endl;
 					return -20;
 				}
 				helperNode = helperNode->next;
